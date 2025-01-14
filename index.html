@@ -121,10 +121,13 @@
       <label for="attachment">Add an attachment:</label>
       <input type="file" id="attachment" name="attachment">
       <br>
-      <button type="submit">Submit</button>
+      <button id="submitBtn" type="submit">Submit</button>
     </form>
+    <p id="errorMessage" style="color: red; display: none;">This ticket has already been submitted. Please modify your submission.</p>
   </div>
   <script>
+
+    //
     // Adding a list of allowed domains to make sure users enter their company email
     // Suggestion: Consider moving this list to a separate configuration file or environment variable for easier maintenance and scalability.
     const allowedDomains = ['speardnm.com', 'buildology.com', 'blackrock-services.com', 'tlrnm.com', 'servicepointpro.com', 'kdcmech.com', 'tlcplumbing.com'];
@@ -202,6 +205,10 @@
     // Suggestion: Consider adding more robust error handling and logging to improve troubleshooting, especially in production environments.
     document.getElementById('testForm').addEventListener('submit', function(e) {
       e.preventDefault();
+
+      var submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting..."
       var firstName = document.getElementById('FirstName').value;
       var lastName = document.getElementById('LastName').value;
       var fullName = firstName + ' ' + lastName;
@@ -226,16 +233,16 @@
           contentBase64String: reader.result.split(',')[1] // Remove data URL prefix
         };
 
-        sendFormData(formData);
+        sendFormData(formData, submitBtn);
       };
       reader.readAsDataURL(file);
 
     } else {
-      sendFormData(formData);
+      sendFormData(formData, submitBtn);
     }
   });
 
-        function sendFormData(formData){
+        function sendFormData(formData, submitBtn){
           fetch('https://prod-92.westus.logic.azure.com:443/workflows/0c6eecce70174cc08a02d373c4587f1a/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Eu3HNfHwEw81t9whE-FmpgTg5ZzbBcRxuAt8Za23kXs', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -257,6 +264,10 @@
         .catch((error) => {
           console.error('Error: ', error);
           alert('An error occured. Please try again.');
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit";
         });
         }
   </script>
