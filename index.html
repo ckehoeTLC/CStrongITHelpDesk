@@ -73,6 +73,9 @@
     button:hover {
       background-color: #A00D25;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -91,6 +94,7 @@
           <input type="text" id="LastName" name="LastName" placeholder="Last Name" required>
         </div>
       </div>
+    
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" required><br>
       <label for="company">Company:</label>
@@ -268,6 +272,9 @@
         .finally(() => {
           submitBtn.disabled = false;
           submitBtn.textContent = "Submit";
+          //hide form and button after submission
+          document.getElementById('testForm').classList.add('hidden');
+          submitBtn.classList.add('hidden');
         });
         }
   </script>
